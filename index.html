@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+	#images {
+		text-align: center;
+		list-style: none;
+	}
+	</style>
+</head>
+<body>
+<ul id="images">
+
+</ul>
+</body>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script>
+	var after;
+	$.getJSON("http://www.reddit.com/r/aww/.json?", function(data) {
+		after = data.data.after;
+    $.each(data.data.children, function(i,item){
+    	//img = "<img alt='' img='"+item.data.url+"' />";
+
+		var oLi = document.createElement("li");
+
+    	var oImg=document.createElement("img");
+		oImg.setAttribute('src', item.data.url);
+		oImg.setAttribute('alt', '');
+		oImg.setAttribute('style', 'max-width: 60%; max-height: 800px');
+
+		oLi.appendChild(oImg);
+
+        //$("<img/>").attr("src", item.data.url).appendTo("#images");
+        end4 = item.data.url.substr(item.data.url.length -4, 4);
+        if(end4 == ".jpg"){
+        	$("#images").append(oLi);
+
+        }
+
+
+    });
+});
+
+	$(window).scroll(function(){
+		var scrollHeight = $(document).height();
+		var scrollPosition = $(window).height() + $(window).scrollTop();
+
+		if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
+			$.getJSON("http://www.reddit.com/r/aww/.json?count=25&after="+after, function(data) {
+				images = getRedditImages(data);
+			});
+		}
+	});
+
+	function getRedditImages(data){
+		$.each(data.data.children, function(i,item){
+			//img = "<img alt='' img='"+item.data.url+"' />";
+
+			images = [];
+
+			var oLi = document.createElement("li");
+
+			var oImg=document.createElement("img");
+			oImg.setAttribute('src', item.data.url);
+			oImg.setAttribute('alt', '');
+			oImg.setAttribute('style', 'max-width: 60%; max-height: 800px');
+
+			oLi.appendChild(oImg);
+
+			//$("<img/>").attr("src", item.data.url).appendTo("#images");
+			end4 = item.data.url.substr(item.data.url.length -4, 4);
+			if(end4 == ".jpg"){
+				$("#images").append(oLi);
+				images.push(oLi);
+			}
+
+			return images;
+
+		});
+	}
+</script>
+</html>
